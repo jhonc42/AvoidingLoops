@@ -62,6 +62,41 @@ namespace IteratorDemo
             //}
             //return cheapest;
         }
+
+        // OTROS METODOS QUE PODRIAN NECESITARSE SOBRE AVERIGUAR UQUIEN ES EL MAS RAPIDO PINTOR:
+        private static IPainter FindFastestPainter(double sqMeters, IEnumerable<IPainter> painters)
+        {
+            return
+                painters
+                    .Where(painter => painter.IsAvailable)
+                    .WithMinimun(painter => painter.EstimateTimeToPaint(sqMeters));
+        }
+        // AHORA SE QUIERE QUE LOS PINTORES TRABAJEN CONJUNTAMENTE, JUNTOS PARA SOLUCIONAR UN PEDIDO:
+        private static IPainter WorkTogether(double sqMeters, IEnumerable<IPainter> painters)
+        {
+            TimeSpan time =
+                TimeSpan.FromHours(
+                    1/
+                    painters
+                        .Where(painter => painter.IsAvailable)
+                        .Select(painter => 1/painter.EstimateTimeToPaint(sqMeters).TotalHours)
+                        .Sum()
+                    );
+            double cost =
+                painters
+                    .Where(painter => painter.IsAvailable)
+                    .Select(painter => 
+                        painter.EstimateCompensation(sqMeters)/
+                        painter.EstimateTimeToPaint(sqMeters).TotalHours*
+                        time.TotalHours)
+                    .Sum();
+            return new ProportionalPainter()
+            {
+                TimePerSqMeter = TimeSpan.FromHours(time.TotalHours / sqMeters),
+                DollarsPerHour = cost/time.TotalHours
+            };
+                
+        }
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
