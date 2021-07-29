@@ -6,71 +6,73 @@ namespace IteratorDemo
 {
     class Program
     {
-        private static IPainter FindCheapestPainter(double sqMeters, IEnumerable<IPainter> painters) 
-        {
+        private static IPainter FindCheapestPainter(double sqMeters, Painters painters) =>
+            painters.GetAvailable().GetCheapestOne(sqMeters);
+        //{
 
-            return
-                painters
-                .Where(x => x.IsAvailable)
-                .WithMinimun(painter => painter.EstimateCompensation(sqMeters));
+        //return
+        //    painters
+        //    .Where(x => x.IsAvailable)
+        //    .WithMinimun(painter => painter.EstimateCompensation(sqMeters));
 
-            // este c´ódigo es el mejor approach, pero es ilegible y viola ese principio de clean code, por lo cual, una forma de volver bonito y legible un código
-            // es envolviendo lo feo en un método de extensión:
-            //return
-            //    painters
-            //    .Where(x => x.IsAvailable)
-            //    .Aggregate((IPainter)null, (best, cur) =>
-            //        best == null ||
-            //        cur.EstimateCompensation(sqMeters) < best.EstimateCompensation(sqMeters) ?
-            //        cur : best
-            //    );
+        // este c´ódigo es el mejor approach, pero es ilegible y viola ese principio de clean code, por lo cual, una forma de volver bonito y legible un código
+        // es envolviendo lo feo en un método de extensión:
+        //return
+        //    painters
+        //    .Where(x => x.IsAvailable)
+        //    .Aggregate((IPainter)null, (best, cur) =>
+        //        best == null ||
+        //        cur.EstimateCompensation(sqMeters) < best.EstimateCompensation(sqMeters) ?
+        //        cur : best
+        //    );
 
-            // este código es bueno, pero ilegible y llama dos veces a la función, además si viene un null se reventaría.
-            //return
-            //    painters
-            //    .Where(x => x.IsAvailable)
-            //    .Aggregate((best, cur) =>
-            //        best.EstimateCompensation(sqMeters) < cur.EstimateCompensation(sqMeters) ?
-            //        best : cur
-            //    );
+        // este código es bueno, pero ilegible y llama dos veces a la función, además si viene un null se reventaría.
+        //return
+        //    painters
+        //    .Where(x => x.IsAvailable)
+        //    .Aggregate((best, cur) =>
+        //        best.EstimateCompensation(sqMeters) < cur.EstimateCompensation(sqMeters) ?
+        //        best : cur
+        //    );
 
-            // Este código no es bueno para buscar dentro de una secuencia de elementos, ya que afecta el performance
-            //return
-            //    painters
-            //    .Where(x => x.IsAvailable)
-            //    .OrderBy(painter => painter.EstimateCompensation(sqMeters))
-            //    .FirstOrDefault();
+        // Este código no es bueno para buscar dentro de una secuencia de elementos, ya que afecta el performance
+        //return
+        //    painters
+        //    .Where(x => x.IsAvailable)
+        //    .OrderBy(painter => painter.EstimateCompensation(sqMeters))
+        //    .FirstOrDefault();
 
-            //return 
-            //    painters
-            //    .ThoseAvailable()
-            //    .WithMinimim(painter.EstimateCompensation(sqMeters));
+        //return 
+        //    painters
+        //    .ThoseAvailable()
+        //    .WithMinimim(painter.EstimateCompensation(sqMeters));
 
-            //double bestPrice = 0;
-            //IPainter cheapest = null;
-            //foreach (IPainter painter in painters)
-            //{
-            //    if (painter.IsAvailable)
-            //    {
-            //        double price = painter.EstimateCompensation(sqMeters);
-            //        if (cheapest == null || price < bestPrice)
-            //        {
-            //            cheapest = painter;
-            //        }
+        //double bestPrice = 0;
+        //IPainter cheapest = null;
+        //foreach (IPainter painter in painters)
+        //{
+        //    if (painter.IsAvailable)
+        //    {
+        //        double price = painter.EstimateCompensation(sqMeters);
+        //        if (cheapest == null || price < bestPrice)
+        //        {
+        //            cheapest = painter;
+        //        }
 
-            //    }
-            //}
-            //return cheapest;
-        }
+        //    }
+        //}
+        //return cheapest;
+        //}
 
-        // OTROS METODOS QUE PODRIAN NECESITARSE SOBRE AVERIGUAR UQUIEN ES EL MAS RAPIDO PINTOR:
-        private static IPainter FindFastestPainter(double sqMeters, IEnumerable<IPainter> painters)
-        {
-            return
-                painters
-                    .Where(painter => painter.IsAvailable)
-                    .WithMinimun(painter => painter.EstimateTimeToPaint(sqMeters));
-        }
+        // OTROS METODOS QUE PODRIAN NECESITARSE SOBRE AVERIGUAR QUIEN ES EL MAS RAPIDO PINTOR:
+        private static IPainter FindFastestPainter(double sqMeters, Painters painters) =>
+            painters.GetAvailable().GetFastestOne(sqMeters);
+        //{
+        //    return
+        //        painters
+        //            .Where(painter => painter.IsAvailable)
+        //            .WithMinimun(painter => painter.EstimateTimeToPaint(sqMeters));
+        //}
         // AHORA SE QUIERE QUE LOS PINTORES TRABAJEN CONJUNTAMENTE, JUNTOS PARA SOLUCIONAR UN PEDIDO:
         private static IPainter WorkTogether(double sqMeters, IEnumerable<IPainter> painters)
         {
