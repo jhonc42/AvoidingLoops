@@ -6,8 +6,9 @@ namespace IteratorDemo
 {
     class Program
     {
-        private static IPainter FindCheapestPainter(double sqMeters, Painters painters) =>
-            painters.GetAvailable().GetCheapestOne(sqMeters);
+        //Este metodo se paso a la clase CompositePainterFactories:
+        //private static IPainter FindCheapestPainter(double sqMeters, Painters painters) =>
+        //    painters.GetAvailable().GetCheapestOne(sqMeters);
         //{
 
         //return
@@ -65,8 +66,8 @@ namespace IteratorDemo
         //}
 
         // OTROS METODOS QUE PODRIAN NECESITARSE SOBRE AVERIGUAR QUIEN ES EL MAS RAPIDO PINTOR:
-        private static IPainter FindFastestPainter(double sqMeters, Painters painters) =>
-            painters.GetAvailable().GetFastestOne(sqMeters);
+        //private static IPainter FindFastestPainter(double sqMeters, Painters painters) =>
+        //    painters.GetAvailable().GetFastestOne(sqMeters);
         //{
         //    return
         //        painters
@@ -74,34 +75,36 @@ namespace IteratorDemo
         //            .WithMinimun(painter => painter.EstimateTimeToPaint(sqMeters));
         //}
         // AHORA SE QUIERE QUE LOS PINTORES TRABAJEN CONJUNTAMENTE, JUNTOS PARA SOLUCIONAR UN PEDIDO:
-        private static IPainter WorkTogether(double sqMeters, IEnumerable<IPainter> painters)
-        {
-            TimeSpan time =
-                TimeSpan.FromHours(
-                    1/
-                    painters
-                        .Where(painter => painter.IsAvailable)
-                        .Select(painter => 1/painter.EstimateTimeToPaint(sqMeters).TotalHours)
-                        .Sum()
-                    );
-            double cost =
-                painters
-                    .Where(painter => painter.IsAvailable)
-                    .Select(painter => 
-                        painter.EstimateCompensation(sqMeters)/
-                        painter.EstimateTimeToPaint(sqMeters).TotalHours*
-                        time.TotalHours)
-                    .Sum();
-            return new ProportionalPainter()
-            {
-                TimePerSqMeter = TimeSpan.FromHours(time.TotalHours / sqMeters),
-                DollarsPerHour = cost/time.TotalHours
-            };
+        //private static IPainter WorkTogether(double sqMeters, IEnumerable<IPainter> painters)
+        //{
+        //    TimeSpan time =
+        //        TimeSpan.FromHours(
+        //            1/
+        //            painters
+        //                .Where(painter => painter.IsAvailable)
+        //                .Select(painter => 1/painter.EstimateTimeToPaint(sqMeters).TotalHours)
+        //                .Sum()
+        //            );
+        //    double cost =
+        //        painters
+        //            .Where(painter => painter.IsAvailable)
+        //            .Select(painter => 
+        //                painter.EstimateCompensation(sqMeters)/
+        //                painter.EstimateTimeToPaint(sqMeters).TotalHours*
+        //                time.TotalHours)
+        //            .Sum();
+        //    return new ProportionalPainter()
+        //    {
+        //        TimePerSqMeter = TimeSpan.FromHours(time.TotalHours / sqMeters),
+        //        DollarsPerHour = cost/time.TotalHours
+        //    };
                 
-        }
+        //}
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            IEnumerable<ProportionalPainter> painters = new ProportionalPainter[10];
+            // Aqui por ejemplo se crea un objeto pintor que es el mas barato de todos los pintores.
+            IPainter painter = CompositePainterFactories.CreateCheapestSelector(painters);
         }
     }
 }
